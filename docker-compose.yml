@@ -14,3 +14,18 @@ services:
       - POSTGRESQL_USERNAME=postgres
       - POSTGRESQL_PASSWORD=postgres
       - POSTGRESQL_DATABASE=short_text
+  
+  short-text:
+    container_name: short-text
+    image: short-text:latest
+    build: .
+    environment:
+      - DB_URL=postgres://postgres:postgres@db:5432/short_text
+      - DB_USERNAME=posgres
+      - DB_PASSWORD=postgres
+    ports:
+      - "80:80"
+    networks:
+      - short-text-network
+    depends_on:
+      - db
