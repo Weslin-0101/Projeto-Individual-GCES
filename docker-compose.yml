@@ -1,0 +1,16 @@
+version: '3'
+networks:
+  short-text-network:
+    driver: bridge
+
+services:
+  db:
+    container_name: short-text-postgres
+    image: bitnami/postgresql:latest
+    restart: always
+    ports:
+      - "5440:5432"
+    environment:
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=postgres
+      - POSTGRESQL_DATABASE=short_text
