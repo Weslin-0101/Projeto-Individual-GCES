@@ -36,9 +36,9 @@ def collate_for_transformer(list_of_samples):
     """
     docs, attention_masks, labels = [], [], []
     for sample in list_of_samples:
-        docs.append(sample['input_ids'])
-        attention_masks.append(sample['attention_mask'])
-        labels.append(int(sample['labels']))
+        docs.append(sample["input_ids"])
+        attention_masks.append(sample["attention_mask"])
+        labels.append(int(sample["labels"]))
     # to tensors
     docs = torch.stack(docs)
     attention_masks = torch.stack(attention_masks)
@@ -53,15 +53,12 @@ class MLP(nn.Module):
     https://github.com/lgalke/text-clf-baselines/blob/main/models.py
     """
 
-    def __init__(self, vocab_size, num_classes,
-                 num_hidden_layers=1,
-                 hidden_size=1024, hidden_act='relu',
-                 dropout=0.5, idf=None, mode='mean',
-                 pretrained_embedding=None, freeze=True,
-                 embedding_dropout=0.5):
+    def __init__(
+        self, vocab_size, num_classes, num_hidden_layers=1, hidden_size=1024, hidden_act="relu", dropout=0.5, idf=None, mode="mean", pretrained_embedding=None, freeze=True, embedding_dropout=0.5
+    ):
         nn.Module.__init__(self)
         # Treat TF-IDF mode appropriately
-        mode = 'sum' if idf is not None else mode
+        mode = "sum" if idf is not None else mode
         self.idf = idf
 
         # Input-to-hidden (efficient via embedding bag)
@@ -129,8 +126,7 @@ class LSTM(nn.Module):
     Simple LSTM for text classification
     """
 
-    def __init__(self, vocab_size, num_classes, bidirectional, hidden_size, num_layers,
-                 dropout, pretrained_embedding=None, freeze=True):
+    def __init__(self, vocab_size, num_classes, bidirectional, hidden_size, num_layers, dropout, pretrained_embedding=None, freeze=True):
         super(LSTM, self).__init__()
 
         self.input_size = vocab_size

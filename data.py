@@ -6,11 +6,11 @@ import torch
 from joblib import Memory
 from tokenizers import Tokenizer, normalizers
 from tokenizers.models import WordLevel
-from tokenizers.normalizers import Lowercase, NFD, StripAccents
+from tokenizers.normalizers import NFD, Lowercase, StripAccents
 from tokenizers.pre_tokenizers import Whitespace
 from tqdm import tqdm
 
-CACHE_DIR = 'tmp/cache'
+CACHE_DIR = "tmp/cache"
 MEMORY = Memory(CACHE_DIR, verbose=2)
 RANDOM_STATE = 42  # 42 is chosen as the binary representation of the number has the same amount of 1s as 0s 1s
 
@@ -25,9 +25,9 @@ def load_pretrained_embeddings(path, unk_token=None):
     """
     vocab = dict()
     vectors = []
-    with open(path, mode='r', encoding="utf-8") as f:
+    with open(path, mode="r", encoding="utf-8") as f:
         for i, line in tqdm(enumerate(f)):
-            word, *vector_str = line.strip().split(' ')
+            word, *vector_str = line.strip().split(" ")
             if len(vector_str) == 1:
                 logging.debug(f"[load_pretrained_embeddings] Ignoring row {i + 1}: {line}")
                 continue
@@ -74,7 +74,7 @@ def prepare_data(dataset, tokenizer, dataset_class, *, shuffle=False, max_length
     :param max_length: the maximum length of the input sequences
     :return: the test and train dataset, the label dictionary
     """
-    train_text, train_labels = dataset['train']
+    train_text, train_labels = dataset["train"]
 
     if shuffle:
         # shuffle train_text and train_labels in the same way
@@ -85,17 +85,17 @@ def prepare_data(dataset, tokenizer, dataset_class, *, shuffle=False, max_length
 
     # tokenize text
     train_encodings = tokenizer(train_text, truncation=True, padding=True, max_length=max_length)
-    test_text, test_labels = dataset['test']
+    test_text, test_labels = dataset["test"]
     test_encodings = tokenizer(test_text, truncation=True, padding=True, max_length=max_length)
     # encode labels
-    label_dict = dataset['label_dict']
+    label_dict = dataset["label_dict"]
     train_labels_encoded = [label_dict[label] for label in train_labels]
     test_labels_encoded = [label_dict[label] for label in test_labels]
     # create dataset
     train_data = dataset_class(train_encodings, train_labels_encoded)
     test_data = dataset_class(test_encodings, test_labels_encoded)
 
-    return test_data, train_data, dataset['label_dict']
+    return test_data, train_data, dataset["label_dict"]
 
 
 def prepare_data_custom_tokenizer(dataset, tokenizer, dataset_class):
@@ -109,20 +109,20 @@ def prepare_data_custom_tokenizer(dataset, tokenizer, dataset_class):
 
     :return: the test and train dataset, the label dictionary
     """
-    train_text, train_labels = dataset['train']
+    train_text, train_labels = dataset["train"]
     # tokenize text
     train_encodings = [tokenizer.encode(text) for text in train_text]
-    test_text, test_labels = dataset['test']
+    test_text, test_labels = dataset["test"]
     test_encodings = [tokenizer.encode(text) for text in test_text]
     # encode labels
-    label_dict = dataset['label_dict']
+    label_dict = dataset["label_dict"]
     train_labels_encoded = [label_dict[label] for label in train_labels]
     test_labels_encoded = [label_dict[label] for label in test_labels]
     # create dataset
     train_data = dataset_class(train_encodings, train_labels_encoded)
     test_data = dataset_class(test_encodings, test_labels_encoded)
 
-    return test_data, train_data, dataset['label_dict']
+    return test_data, train_data, dataset["label_dict"]
 
 
 @MEMORY.cache
@@ -138,25 +138,25 @@ def load_data(key):
     """
     dataset = {"name": key}
 
-    if key == 'MR':
+    if key == "MR":
         load_MR(dataset)
-    elif key == 'R8':
+    elif key == "R8":
         load_R8(dataset)
-    elif key == 'SearchSnippets':
+    elif key == "SearchSnippets":
         load_SearchSnippets(dataset)
-    elif key == 'Twitter':
+    elif key == "Twitter":
         load_Twitter(dataset)
-    elif key == 'TREC':
+    elif key == "TREC":
         load_TREC(dataset)
-    elif key == 'SST2':
+    elif key == "SST2":
         load_SST2(dataset)
-    elif key == 'NICE':
+    elif key == "NICE":
         load_NICE(dataset)
-    elif key == 'NICE2':
+    elif key == "NICE2":
         load_NICE2(dataset)
-    elif key == 'STOPS':
+    elif key == "STOPS":
         load_STOPS(dataset)
-    elif key == 'STOPS2':
+    elif key == "STOPS2":
         load_STOPS2(dataset)
     else:
         raise ValueError(f"Unknown dataset: {key}")
@@ -177,8 +177,7 @@ def load_STOPS2(dataset):
     Load the STOPS2 dataset
     :param dataset: the dataset dictionary
     """
-    load_tab_spaced_data("data/STOPS/STOPS-2/STOPS-2_test.txt", "data/STOPS/STOPS-2/STOPS-2_train.txt",
-                         dataset)
+    load_tab_spaced_data("data/STOPS/STOPS-2/STOPS-2_test.txt", "data/STOPS/STOPS-2/STOPS-2_train.txt", dataset)
 
 
 def load_NICE(dataset):
@@ -256,8 +255,7 @@ def load_TREC(dataset):
     with open("data/corpus/TREC.clean.txt", "r", encoding="utf-8") as f:
         data = f.read().splitlines()
     with open("data/TREC/TREC.txt", "r", encoding="utf-8") as f:
-        data_information = [(int(word[0]), word[1], word[2]) for word in
-                            [line.split() for line in f.read().splitlines()]]
+        data_information = [(int(word[0]), word[1], word[2]) for word in [line.split() for line in f.read().splitlines()]]
 
     # train_data/test_data based on data_information (index, split, label)
     train_data = []
@@ -265,7 +263,7 @@ def load_TREC(dataset):
     test_data = []
     test_labels = []
     for index, split, label in data_information:
-        if split == 'train':
+        if split == "train":
             train_data.append(data[index])
             train_labels.append(label)
         else:
@@ -290,8 +288,8 @@ def load_Twitter(dataset):
 
     nltk.data.path.append("data/nltk_data")
 
-    negative = twitter_samples.strings('negative_tweets.json')
-    positive = twitter_samples.strings('positive_tweets.json')
+    negative = twitter_samples.strings("negative_tweets.json")
+    positive = twitter_samples.strings("positive_tweets.json")
 
     # shuffle with fixed seed for reproducibility
     np.random.seed(RANDOM_STATE)
@@ -328,14 +326,14 @@ def load_SearchSnippets(dataset):
     :param dataset: the dataset dictionary
     """
     # load training data
-    with open("data/data-web-snippets/train.txt", "r", encoding='utf8') as f:
+    with open("data/data-web-snippets/train.txt", "r", encoding="utf8") as f:
         raw_train = [line.strip() for line in f]
     list_of_words = [line.split() for line in raw_train]
     # last element is the label
     train_data = [" ".join(line[:-1]) for line in list_of_words]
     train_labels = [line[-1] for line in list_of_words]
     # load test data
-    with open("data/data-web-snippets/test.txt", "r", encoding='utf8') as f:
+    with open("data/data-web-snippets/test.txt", "r", encoding="utf8") as f:
         raw_train = [line.strip() for line in f]
     list_of_words = [line.split() for line in raw_train]
     # last element is the label
@@ -419,7 +417,7 @@ class Dataset(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
         item = {key: torch.tensor(value[index]) for key, value in self.text.items()}
-        item['labels'] = self.labels[index]
+        item["labels"] = self.labels[index]
         return item
 
     def __len__(self):

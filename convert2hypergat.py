@@ -1,36 +1,34 @@
-from tqdm import tqdm
-
 from data import load_data
+from tqdm import tqdm
 
 
 def convert_data(name):
     dataset = load_data(name)
-    train_texts, train_labels = dataset['train']
-    test_texts, test_labels = dataset['test']
-    label_dict = dataset['label_dict']
+    train_texts, train_labels = dataset["train"]
+    test_texts, test_labels = dataset["test"]
 
-    path_to_data = 'HYPERGAT/data'
+    path_to_data = "HYPERGAT/data"
 
     # labels.txt
-    with open(f'{path_to_data}/{name}_labels.txt', 'w', encoding="utf-8") as f:
+    with open(f"{path_to_data}/{name}_labels.txt", "w", encoding="utf-8") as f:
         counter = 0
-        for l in train_labels:
-            f.write(f'{counter}\ttrain\t{l}\n')
+        for labels in train_labels:
+            f.write(f"{counter}\ttrain\t{labels}\n")
             counter += 1
-        for l in test_labels:
-            f.write(f'{counter}\ttest\t{l}\n')
+        for labels in test_labels:
+            f.write(f"{counter}\ttest\t{labels}\n")
             counter += 1
 
     # corpus.txt
-    with open(f'{path_to_data}/{name}_corpus.txt', 'w', encoding="utf-8") as f:
+    with open(f"{path_to_data}/{name}_corpus.txt", "w", encoding="utf-8") as f:
         for text in tqdm(train_texts):
-            f.write(f'{text}\n')
+            f.write(f"{text}\n")
         for text in tqdm(test_texts):
-            f.write(f'{text}\n')
+            f.write(f"{text}\n")
 
 
-if __name__ == '__main__':
-    datasets = ['MR', 'TREC', 'SST2', 'R8', 'Twitter', 'SearchSnippets', 'NICE', 'NICE2', 'STOPS', 'STOPS2']
+if __name__ == "__main__":
+    datasets = ["MR", "TREC", "SST2", "R8", "Twitter", "SearchSnippets", "NICE", "NICE2", "STOPS", "STOPS2"]
     for dataset in datasets:
         convert_data(dataset)
-        print(f'convert {dataset} done.')
+        print(f"convert {dataset} done.")
