@@ -3,7 +3,6 @@ name = "short-poetry"
 version = "0.1.0"
 description = ""
 authors = ["your name <youremail@gmail.com>"]
-packages = [{include = "short_poetry"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
