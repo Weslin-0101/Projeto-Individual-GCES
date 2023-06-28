@@ -1,0 +1,4 @@
+#!/bin/sh
+STARTDIR=`pwd`
+cd short-poetry
+poetry run bash -c "cd $STARTDIR && python -m foo $*"
